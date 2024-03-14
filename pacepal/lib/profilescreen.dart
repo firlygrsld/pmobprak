@@ -13,7 +13,7 @@ class ProfileScreen extends StatelessWidget {
           IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
         ],
         backgroundColor: Colors.white,
-        foregroundColor: Colors.blue[900],
+        foregroundColor: Color.fromARGB(255, 2, 30, 71),
         elevation: 0.0,
       ),
       backgroundColor: Colors.white,

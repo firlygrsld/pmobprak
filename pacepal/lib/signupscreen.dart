@@ -25,7 +25,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.all(5),
+              padding: const EdgeInsets.only(
+                  left: 100, top: 30, right: 100, bottom: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -65,9 +66,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         width: 50,
                         child: Theme(
                           data: ThemeData(
-                              unselectedWidgetColor: Colors.blue[900]),
+                              unselectedWidgetColor:
+                                  Color.fromARGB(255, 2, 30, 71)),
                           child: Checkbox(
-                            activeColor: Colors.blue[900],
+                            activeColor: Color.fromARGB(255, 2, 30, 71),
                             value: isCheckedRememberMe,
                             onChanged: (value) {
                               setState(() {

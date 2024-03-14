@@ -25,27 +25,28 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.all(5),
+              padding: const EdgeInsets.only(
+                  left: 100, top: 30, right: 100, bottom: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'email',
+                      labelText: 'Email',
                       border: UnderlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'new password',
+                      labelText: 'New Password',
                       border: UnderlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'confirm password',
+                      labelText: 'Confirm Password',
                       border: UnderlineInputBorder(),
                     ),
                   ),
@@ -58,9 +59,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         width: 50,
                         child: Theme(
                           data: ThemeData(
-                              unselectedWidgetColor: Colors.blue[900]),
+                            unselectedWidgetColor:
+                                Color.fromARGB(255, 2, 30, 71),
+                          ),
                           child: Checkbox(
-                            activeColor: Colors.blue[900],
+                            activeColor: Color.fromARGB(255, 2, 30, 71),
                             value: isCheckedRememberMe,
                             onChanged: (value) {
                               setState(() {
@@ -70,9 +73,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(width: 10),
                       Text(
-                        'remember me',
+                        'Remember me',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],

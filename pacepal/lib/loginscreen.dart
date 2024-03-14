@@ -27,7 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+              padding: const EdgeInsets.only(
+                  left: 100, top: 30, right: 100, bottom: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -56,9 +57,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 50,
                         child: Theme(
                           data: ThemeData(
-                              unselectedWidgetColor: Colors.blue[900]),
+                              unselectedWidgetColor:
+                                  Color.fromARGB(255, 2, 30, 71)),
                           child: Checkbox(
-                            activeColor: Colors.blue[900],
+                            activeColor: Color.fromARGB(255, 2, 30, 71),
                             value: isCheckedRememberMe,
                             onChanged: (value) {
                               setState(() {
@@ -145,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         "Don't have an account? ",
                         style: TextStyle(
-                          color: Colors.blue[900],
+                          color: Color.fromARGB(255, 2, 30, 71),
                         ),
                       ),
                       GestureDetector(
