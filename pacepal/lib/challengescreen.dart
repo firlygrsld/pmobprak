@@ -59,8 +59,8 @@ class ChallengeScreen extends StatelessWidget {
           children: [
             Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(height: 30),
                   Container(
                     width: 300,
                     padding: const EdgeInsets.all(20),
@@ -70,9 +70,13 @@ class ChallengeScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        const Text(
-                          'How many steps for today?',
-                          style: TextStyle(color: Colors.black),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'How many steps for today?',
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
+                          ),
                         ),
                         SizedBox(height: 30),
                         Row(
@@ -90,7 +94,8 @@ class ChallengeScreen extends StatelessWidget {
                               child: const Text(
                                 'Pick Date',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 2, 30, 71)),
+                                  color: Color.fromARGB(255, 2, 30, 71),
+                                ),
                               ),
                             ),
                           ],
@@ -99,12 +104,12 @@ class ChallengeScreen extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.orange, // Warna latar belakang
+                            primary: Colors.orange,
                           ),
                           child: Text(
                             'Set',
                             style: TextStyle(
-                              color: Colors.white, // Warna teks
+                              color: Colors.white,
                             ),
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pacepal/loginscreen.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key});
@@ -8,10 +9,12 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
-        leading: const Icon(Icons.arrow_back),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Color.fromARGB(255, 2, 30, 71),
         elevation: 0.0,
@@ -33,8 +36,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20.0),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 100, top: 30, right: 100, bottom: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -94,7 +96,14 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
