@@ -99,7 +99,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Please fill in all fields!'),
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: Colors.orange,
                                 ),
                               );
                             }

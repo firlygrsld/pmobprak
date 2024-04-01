@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Image.asset(
               'assets/img/pacepal.jpg',
-              height: 150,
+              height: 170,
               width: 150,
             ),
             SizedBox(height: 10),

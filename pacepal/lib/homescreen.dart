@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:pacepal/BarGraph/bar_graph.dart';
 import 'package:pacepal/profilescreen.dart';
@@ -12,8 +13,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<double> weeklySummary = [
-    4.40,
-    2.50,
+    64.40,
+    72.50,
     42.42,
     10.50,
     100.20,
@@ -22,34 +23,25 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   int _selectedIndex = 0;
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  late List<Widget> _widgetOptions;
-
-  @override
-  void initState() {
-    super.initState();
-    _widgetOptions = [
-      MyBarGraph(
-        weeklySummary: weeklySummary,
-      ),
-      Text(
-        'Index 1: Start',
-        style: optionStyle,
-      ),
-    ];
-  }
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: CurvedNavigationBar(
+        height: 50,
+        backgroundColor: Colors.white,
+        color: Color.fromARGB(255, 2, 30, 71),
+        animationDuration: Duration(milliseconds: 200),
+        items: [
+          Icon(Icons.home, color: Colors.white),
+          Icon(Icons.play_arrow, color: Colors.white),
+        ],
+        onTap: _onItemTapped,
+      ),
       backgroundColor: Colors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,97 +84,161 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 40,
           ),
-          SizedBox(
-            height: 220,
-            child: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
-            ),
-          ),
-          if (_selectedIndex ==
-              0) // Menampilkan tombol "New Challenge" hanya di halaman utama
-            SizedBox(height: 20),
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChallengeScreen(),
+          if (_selectedIndex == 0)
+            Column(
+              children: [
+                SizedBox(
+                  height: 220,
+                  child: MyBarGraph(
+                    weeklySummary: weeklySummary,
                   ),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 3,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
                 ),
-                child: SizedBox(
-                  width: 300,
-                  height: 150,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      Container(
-                        width: 280,
-                        height: 90,
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 187, 240, 189),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                SizedBox(height: 20),
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChallengeScreen(),
                         ),
-                        child: Center(
-                          child: Text(
-                            "Ready for a new challenge?",
-                            textAlign: TextAlign.center,
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
                           ),
+                        ],
+                      ),
+                      child: SizedBox(
+                        width: 300,
+                        height: 150,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Container(
+                              width: 280,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 187, 240, 189),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Ready for a new challenge?",
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 2, 30, 71),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                'New Challenge',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 2, 30, 71),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'New Challenge',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
+              ],
+            ),
+          if (_selectedIndex == 1)
+            Expanded(
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                      childAspectRatio: 1.5,
+                      children: [
+                        buildGridItem(Icons.access_time, "Time"),
+                        buildGridItem(Icons.speed, "Speed"),
+                        buildGridItem(Icons.favorite, "Heart Rate"),
+                        buildGridItem(Icons.whatshot, "Burn Calories"),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 100,
+                    left: 60,
+                    right: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.orange,
+                          radius: 32,
+                          child: Icon(Icons.play_arrow),
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.orange,
+                          radius: 32,
+                          child: Icon(Icons.stop),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildGridItem(IconData iconData, String label) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 3,
+            blurRadius: 5,
+            offset: Offset(0, 3),
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            iconData,
+            size: 50,
+            color: Color.fromARGB(255, 2, 30, 71),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.play_arrow),
-            label: 'Start',
+          SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+            ),
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 2, 30, 71),
-        onTap: _onItemTapped,
       ),
     );
   }

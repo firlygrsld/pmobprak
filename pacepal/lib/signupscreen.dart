@@ -58,6 +58,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     obscureText: true,
                   ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'confirm password',
+                      border: UnderlineInputBorder(),
+                    ),
+                    obscureText: true,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
