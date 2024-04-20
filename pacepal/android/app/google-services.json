@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "90879726715",
+    "project_id": "pacepal-7f5de",
+    "storage_bucket": "pacepal-7f5de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90879726715:android:f52582e14dbedf19413ede",
+        "android_client_info": {
+          "package_name": "com.example.pacepal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQQLIwUTrvcpUT13XuK9OE7M_mqtgH7ZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -67,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    primary: const Color.fromARGB(255, 255, 149, 0),
+                    backgroundColor: const Color.fromARGB(255, 255, 149, 0),
                   ),
                   child: Text(
                     'Change Password',
@@ -84,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    primary: const Color.fromARGB(255, 255, 149, 0),
+                    backgroundColor: const Color.fromARGB(255, 255, 149, 0),
                   ),
                   child: Text(
                     'Edit Profile',

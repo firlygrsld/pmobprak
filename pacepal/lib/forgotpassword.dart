@@ -94,7 +94,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      primary: const Color.fromARGB(255, 255, 149, 0),
+                      backgroundColor: const Color.fromARGB(255, 255, 149, 0),
                     ),
                     child: Text(
                       'SET',

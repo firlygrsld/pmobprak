@@ -111,7 +111,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.orange,
+                            backgroundColor: Colors.orange,
                           ),
                         ),
                       ],
