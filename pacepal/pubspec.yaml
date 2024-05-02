@@ -29,12 +29,14 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   change_app_package_name: ^1.1.0
+  cloud_firestore: ^4.17.0
   cupertino_icons: ^1.0.2
   curved_navigation_bar: ^1.0.3
   firebase_auth: ^4.19.2
   firebase_core: ^2.30.0
   firebase_core_web: ^2.15.0
   fl_chart: ^0.60.0
+  http: ^1.2.1
   flutter:
     sdk: flutter
   font_awesome_flutter: ^10.7.0

@@ -1,5 +1,1 @@
-{
-  "database": {
-    "rules": "database.rules.json"
-  }
-}
+{"database":{"rules":"database.rules.json"},"flutter":{"platforms":{"android":{"default":{"projectId":"pacepal-7f5de","appId":"1:90879726715:android:f52582e14dbedf19413ede","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"pacepal-7f5de","configurations":{"android":"1:90879726715:android:f52582e14dbedf19413ede","ios":"1:90879726715:ios:68677bc3f421b612413ede","macos":"1:90879726715:ios:68677bc3f421b612413ede","web":"1:90879726715:web:cb4defbf53514beb413ede","windows":"1:90879726715:web:9b35c943b9038569413ede"}}}}}}
