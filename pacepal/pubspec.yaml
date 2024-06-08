@@ -35,12 +35,14 @@ dependencies:
   firebase_auth: ^4.19.2
   firebase_core: ^2.30.0
   firebase_core_web: ^2.15.0
+  firebase_storage: ^12.0.0
   fl_chart: ^0.60.0
   flutter:
     sdk: flutter
   font_awesome_flutter: ^10.7.0
   google_nav_bar: ^5.0.6
   http: ^1.2.1
+  image_picker: ^1.1.2
   provider: ^6.1.2
   shared_preferences: ^2.2.3
 

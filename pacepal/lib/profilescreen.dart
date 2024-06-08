@@ -1,10 +1,64 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pacepal/forgotpassword.dart';
 import 'package:pacepal/loginscreen.dart';
+import 'package:pacepal/utils.dart';
 
-class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key});
+class ProfileScreen extends StatefulWidget {
+  ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Uint8List? _image;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = img;
+    });
+  }
+
+  Future<void> saveProfile() async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      String? imageUrl;
+
+      if (_image != null) {
+        final collectionRef = FirebaseFirestore.instance.collection('profiles');
+        final documentRef = collectionRef.doc(uid);
+        await documentRef.set({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+          'image': _image!,
+        });
+
+        imageUrl = await documentRef.get().then((snapshot) {
+          return snapshot.get('image');
+        });
+      }
+
+      if (imageUrl != null) {
+        print('Uploaded image URL: $imageUrl');
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile updated successfully')));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update profile: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
           },
         ),
         backgroundColor: Colors.white,
-        foregroundColor: Color.fromARGB(255, 2, 30, 71),
+        foregroundColor: const Color.fromARGB(255, 2, 30, 71),
         elevation: 0.0,
       ),
       backgroundColor: Colors.white,
@@ -29,10 +83,23 @@ class ProfileScreen extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('assets/img/profile.jpg'),
-                  radius: 50.0,
-                ),
+                _image != null
+                    ? CircleAvatar(
+                        radius: 64,
+                        backgroundImage: MemoryImage(_image!),
+                      )
+                    : const CircleAvatar(
+                        backgroundImage: AssetImage('assets/img/profile.jpg'),
+                        radius: 64,
+                      ),
+                Positioned(
+                  bottom: -10,
+                  left: 80,
+                  child: IconButton(
+                    onPressed: selectImage,
+                    icon: const Icon(Icons.add_a_photo),
+                  ),
+                )
               ],
             ),
           ),
@@ -43,32 +110,35 @@ class ProfileScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
                     labelText: 'nama',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
-                  decoration: InputDecoration(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
                     labelText: 'email',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
-                  decoration: InputDecoration(
+                  controller: _phoneController,
+                  decoration: const InputDecoration(
                     labelText: 'no. telp',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgotPassword()));
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPassword()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -76,32 +146,15 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     backgroundColor: const Color.fromARGB(255, 255, 149, 0),
                   ),
-                  child: Text(
-                    'Resert Password',
+                  child: const Text(
+                    'Reset Password',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    backgroundColor: const Color.fromARGB(255, 255, 149, 0),
-                  ),
-                  child: Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: () async {
                     await FirebaseAuth.instance.signOut();
@@ -115,8 +168,8 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  icon: Icon(Icons.logout, color: Colors.black),
-                  label: Text(
+                  icon: const Icon(Icons.logout, color: Colors.black),
+                  label: const Text(
                     'Log Out',
                     style: TextStyle(color: Colors.black),
                   ),
