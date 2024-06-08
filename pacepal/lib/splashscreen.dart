@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pacepal/loginscreen.dart';
+import 'package:pacepal/signupscreen.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Timer(durasi, () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
-        return LoginScreen();
+        return SignUpScreen();
       }));
     });
   }

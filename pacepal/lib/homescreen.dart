@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pacepal/BarGraph/bar_graph.dart';
 import 'package:pacepal/profilescreen.dart';
 import 'package:pacepal/challengescreen.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,11 +23,32 @@ class _HomeScreenState extends State<HomeScreen> {
     90.10,
   ];
   int _selectedIndex = 0;
+  bool _isTimerRunning = false;
+  int _secondsElapsed = 0;
+  late Timer _timer;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _secondsElapsed++;
+      });
+    });
+  }
+
+  void _stopTimer() {
+    _timer.cancel();
   }
 
   Widget build(BuildContext context) {
@@ -61,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Welcome back, Dian\nCheck your schedule',
+                  'Welcome back,\nCheck your schedule',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -184,18 +206,48 @@ class _HomeScreenState extends State<HomeScreen> {
                     bottom: 100,
                     left: 60,
                     right: 60,
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.orange,
-                          radius: 32,
-                          child: Icon(Icons.play_arrow),
-                        ),
-                        CircleAvatar(
-                          backgroundColor: Colors.orange,
-                          radius: 32,
-                          child: Icon(Icons.stop),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.orange,
+                              radius: 32,
+                              child: IconButton(
+                                icon: Icon(Icons.play_arrow),
+                                onPressed: () {
+                                  setState(() {
+                                    _isTimerRunning = true;
+                                  });
+                                  _startTimer();
+                                },
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                _isTimerRunning
+                                    ? '$_secondsElapsed seconds'
+                                    : 'Timer stopped',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            CircleAvatar(
+                              backgroundColor: Colors.orange,
+                              radius: 32,
+                              child: IconButton(
+                                icon: Icon(Icons.stop),
+                                onPressed: () {
+                                  setState(() {
+                                    _isTimerRunning = false;
+                                    _secondsElapsed = 0;
+                                  });
+                                  _stopTimer();
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -234,10 +286,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             label,
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 16,
             ),
           ),
+          SizedBox(height: 5),
         ],
       ),
     );

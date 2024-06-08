@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChallengeScreen extends StatefulWidget {
   const ChallengeScreen({Key? key}) : super(key: key);
@@ -11,6 +12,45 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   int? steps;
   DateTime? selectedDate;
   List<String> history = [];
+
+  final CollectionReference myItems =
+      FirebaseFirestore.instance.collection("CRUDItems");
+
+  Future<void> _saveData() async {
+    if (steps != null && selectedDate != null) {
+      try {
+        await myItems.add({
+          'steps': steps,
+          'date': selectedDate,
+        });
+        String entry =
+            'Steps: $steps, Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
+        setState(() {
+          history.add(entry);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data saved successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in all fields!'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +81,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[200],
+                  color: Color.fromARGB(255, 221, 228, 240),
                 ),
                 child: Column(
                   children: [
@@ -82,28 +122,16 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                           child: const Text(
                             'Pick Date',
                             style: TextStyle(
-                              color: Color.fromARGB(255, 2, 30, 71),
+                              color: Colors.white,
                             ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
                           ),
                         ),
                         SizedBox(width: 10),
                         TextButton(
-                          onPressed: () {
-                            if (steps != null && selectedDate != null) {
-                              String entry =
-                                  'Steps: $steps, Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
-                              setState(() {
-                                history.add(entry);
-                              });
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Please fill in all fields!'),
-                                  backgroundColor: Colors.orange,
-                                ),
-                              );
-                            }
-                          },
+                          onPressed: _saveData,
                           child: Text(
                             'Set',
                             style: TextStyle(
@@ -138,7 +166,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                     return ListTile(
                       title: Text(data),
                       trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.white),
+                        icon: Icon(Icons.delete, color: Colors.black),
                         onPressed: () {
                           _showDeleteConfirmationDialog(index);
                         },
@@ -172,11 +200,8 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Entry',
-              style: TextStyle(color: Color.fromARGB(255, 2, 30, 71))),
-          content: Text('Are you sure you want to delete this entry?',
-              style: TextStyle(color: Color.fromARGB(255, 2, 30, 71))),
-          backgroundColor: Color.fromARGB(255, 2, 30, 71),
+          title: Text('Delete Entry'),
+          content: Text('Are you sure you want to delete this entry?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -185,15 +210,13 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Delete',
-                  style: TextStyle(color: Color.fromARGB(255, 2, 30, 71))),
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel',
-                  style: TextStyle(color: Color.fromARGB(255, 2, 30, 71))),
+              child: Text('Cancel'),
             ),
           ],
         );

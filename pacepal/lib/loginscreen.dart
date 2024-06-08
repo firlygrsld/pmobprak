@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pacepal/signupscreen.dart';
 import 'package:pacepal/homescreen.dart';
 import 'package:pacepal/forgotpassword.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,6 +16,55 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isCheckedRememberMe = false;
   bool _obscureText = true;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserEmailPassword();
+  }
+
+  Future<void> _loadUserEmailPassword() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isCheckedRememberMe = prefs.getBool('remember_me') ?? false;
+      if (isCheckedRememberMe) {
+        emailController.text = prefs.getString('email') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+      }
+    });
+  }
+
+  Future<void> _saveUserEmailPassword() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('remember_me', isCheckedRememberMe);
+    if (isCheckedRememberMe) {
+      prefs.setString('email', emailController.text);
+      prefs.setString('password', passwordController.text);
+    } else {
+      prefs.remove('email');
+      prefs.remove('password');
+    }
+  }
+
+  Future<void> signUserIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      await _saveUserEmailPassword();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign in: $e')),
+      );
+    }
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -34,14 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 100, top: 30, right: 100, bottom: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
+                  controller: emailController,
                   decoration: InputDecoration(
-                    labelText: 'username',
+                    labelText: 'Email',
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
                     ),
@@ -49,9 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  controller: passwordController,
                   obscureText: _obscureText,
                   decoration: InputDecoration(
-                    labelText: 'password',
+                    labelText: 'Password',
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
                     ),
@@ -66,37 +118,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: Theme(
-                        data: ThemeData(
-                            unselectedWidgetColor:
-                                Color.fromARGB(255, 2, 30, 71)),
-                        child: Checkbox(
-                          activeColor: Color.fromARGB(255, 2, 30, 71),
-                          value: isCheckedRememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedRememberMe = value!;
-                            });
-                          },
-                        ),
-                      ),
+                    Checkbox(
+                      activeColor: Color.fromARGB(255, 2, 30, 71),
+                      value: isCheckedRememberMe,
+                      onChanged: (value) {
+                        setState(() {
+                          isCheckedRememberMe = value!;
+                        });
+                      },
                     ),
-                    SizedBox(height: 20),
                     Text(
-                      'remember me',
+                      'Remember me',
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()));
-                  },
+                  onPressed: signUserIn,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -112,13 +151,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgotPassword()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ForgotPassword();
+                        },
+                      ),
+                    );
                   },
                   child: Text(
-                    'forgot password?',
+                    'Forgot password?',
                     style: TextStyle(
                       color: Colors.grey,
                     ),
@@ -149,7 +192,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: FaIcon(FontAwesomeIcons.twitter),
                       onPressed: () {},
                     ),
-                    SizedBox(width: 20),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -167,7 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignUpScreen()),
+                            builder: (context) => SignUpScreen(),
+                          ),
                         );
                       },
                       child: Text(

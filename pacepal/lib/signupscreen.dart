@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:pacepal/homescreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'loginscreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -14,13 +14,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isCheckedRememberMe = false;
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection("users");
 
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -37,57 +47,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<void> _signup() async {
+  Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     String email = _emailController.text.trim();
-    String phoneNumber = _phoneNumberController.text.trim();
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
     String confirmPassword = _confirmPasswordController.text.trim();
-
-    if (email.isEmpty ||
-        phoneNumber.isEmpty ||
-        username.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      _showSnackBar('Password Mismatch');
-      return;
-    }
 
     if (password != confirmPassword) {
       _showSnackBar('Password and confirm password do not match.');
       return;
     }
 
-    final url = Uri.parse(
-        'https://pacepal-7f5de-default-rtdb.asia-southeast1.firebasedatabase.app/user.json');
-
     try {
-      final response = await http.post(
-        url,
-        body: json.encode({
-          'email': email,
-          'phoneNumber': phoneNumber,
-          'username': username,
-          'password': password,
-        }),
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
 
-      if (response.statusCode == 200) {
+      if (userCredential.user != null) {
+        // Save additional user information to Firestore
+        await usersCollection.doc(userCredential.user!.uid).set({
+          'email': email,
+          'username': username,
+          'uid': userCredential.user!.uid,
+        });
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(),
+            builder: (context) => LoginScreen(),
           ),
         );
       } else {
-        throw Exception('Failed to add user');
+        _showSnackBar('Failed to create user');
       }
     } catch (error) {
-      print("Failed to add user: $error");
+      _showSnackBar('Failed to create user: $error');
     }
   }
 
@@ -118,14 +118,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         labelText: 'email',
                         border: UnderlineInputBorder(),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    TextFormField(
-                      controller: _phoneNumberController,
-                      decoration: InputDecoration(
-                        labelText: 'phone number',
-                        border: UnderlineInputBorder(),
-                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -134,6 +132,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         labelText: 'username',
                         border: UnderlineInputBorder(),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Username is required';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -213,7 +217,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: _signup,
+                      onPressed: _signUp,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pacepal/forgotpassword.dart';
 import 'package:pacepal/loginscreen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -62,7 +64,12 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPassword()));
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -70,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                     backgroundColor: const Color.fromARGB(255, 255, 149, 0),
                   ),
                   child: Text(
-                    'Change Password',
+                    'Resert Password',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -96,12 +103,11 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushReplacement(
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
