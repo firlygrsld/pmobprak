@@ -56,20 +56,16 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Challenge',
-          style: TextStyle(fontSize: 16),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0.0,
+        title: const Text('Challenge'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 2, 30, 71)),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color.fromARGB(255, 2, 30, 71),
+        elevation: 0.0,
       ),
       body: SingleChildScrollView(
         child: Center(

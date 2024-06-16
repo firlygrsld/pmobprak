@@ -19,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -27,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void dispose() {
     _emailController.dispose();
     _usernameController.dispose();
+    _nameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -54,6 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     String email = _emailController.text.trim();
     String username = _usernameController.text.trim();
+    String name = _nameController.text.trim();
     String password = _passwordController.text.trim();
     String confirmPassword = _confirmPasswordController.text.trim();
 
@@ -73,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await usersCollection.doc(userCredential.user!.uid).set({
           'email': email,
           'username': username,
+          'name': name,
           'uid': userCredential.user!.uid,
         });
 
@@ -137,6 +141,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                         return null;
                       },
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: 'name',
+                        border: UnderlineInputBorder(),
+                      ),
                     ),
                     SizedBox(height: 10),
                     TextFormField(

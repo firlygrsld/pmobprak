@@ -17,9 +17,40 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   Uint8List? _image;
-  TextEditingController _nameController = TextEditingController();
+
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileData();
+  }
+
+  Future<void> _fetchProfileData() async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      final documentRef =
+          FirebaseFirestore.instance.collection('users').doc(uid);
+      final docSnapshot = await documentRef.get();
+
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data()!;
+        _emailController.text = data['email'] ?? '';
+        _nameController.text = data['name'] ?? '';
+        _usernameController.text = data['username'] ?? '';
+
+        if (data['image'] != null) {
+          _image = Uint8List.fromList(data['image'].codeUnits);
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch profile data: $e')));
+    }
+    setState(() {});
+  }
 
   void selectImage() async {
     Uint8List img = await pickImage(ImageSource.gallery);
@@ -31,26 +62,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> saveProfile() async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-      String? imageUrl;
+      final collectionRef = FirebaseFirestore.instance.collection('users');
+      final documentRef = collectionRef.doc(uid);
 
-      if (_image != null) {
-        final collectionRef = FirebaseFirestore.instance.collection('profiles');
-        final documentRef = collectionRef.doc(uid);
-        await documentRef.set({
-          'name': _nameController.text,
-          'email': _emailController.text,
-          'phone': _phoneController.text,
-          'image': _image!,
-        });
-
-        imageUrl = await documentRef.get().then((snapshot) {
-          return snapshot.get('image');
-        });
-      }
-
-      if (imageUrl != null) {
-        print('Uploaded image URL: $imageUrl');
-      }
+      await documentRef.set({
+        'email': _emailController.text,
+        'name': _nameController.text,
+        'username': _usernameController.text,
+        'image': _image != null ? String.fromCharCodes(_image!) : null,
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile updated successfully')));
@@ -110,25 +130,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'nama',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
                   controller: _emailController,
+                  readOnly: true,
                   decoration: const InputDecoration(
-                    labelText: 'email',
+                    labelText: 'Email',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
-                  controller: _phoneController,
+                  controller: _nameController,
+                  readOnly: true,
                   decoration: const InputDecoration(
-                    labelText: 'no. telp',
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  controller: _usernameController,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
                     border: OutlineInputBorder(),
                   ),
                 ),

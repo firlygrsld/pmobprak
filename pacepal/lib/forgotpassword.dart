@@ -49,6 +49,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Reset Password'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color.fromARGB(255, 2, 30, 71),
+        elevation: 0.0,
+      ),
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
