@@ -70,7 +70,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if (userCredential.user != null) {
-        // Save additional user information to Firestore
         await usersCollection.doc(userCredential.user!.uid).set({
           'email': email,
           'username': username,
